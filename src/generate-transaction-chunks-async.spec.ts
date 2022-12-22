@@ -35,6 +35,15 @@ describe('generateTransactionChunksAsync', () => {
     expect(chunks).toMatchObject(nativeGeneratedChunks);
   });
 
+  it('should be able to generate chunks for files which are a multiple of MAX_CHUNK_SIZE', async () => {
+    const filePath = './test/fixtures/1mb.bin';
+
+    const chunks = await pipeline(createReadStream(filePath), generateTransactionChunksAsync());
+    const nativeGeneratedChunks = await readFile(filePath).then((data) => generateTransactionChunks(data));
+
+    expect(chunks).toMatchObject(nativeGeneratedChunks);
+  });
+
   it('should be able to generate chunks for really large files', async () => {
     jest.setTimeout(60 * 1000);
 
